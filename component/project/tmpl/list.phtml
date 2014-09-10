@@ -1,0 +1,20 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: Bohdan
+ * Date: 05.05.14
+ * Time: 13:57
+ */
+
+$projects = Project::getProjectsList("array");
+
+foreach($projects as $id=>$project){
+    ?>
+    <a href="/index2.php?type=project&task=edit&id=<?=$id?>"><?=$project?></a><br>
+<?
+}
+?>
+<br>
+<br>
+<br>
+<a href="/index2.php?type=project&task=new">Создать новый</a>

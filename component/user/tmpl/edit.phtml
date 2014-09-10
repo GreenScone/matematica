@@ -1,0 +1,54 @@
+<?
+
+$user = new User();
+if($_REQUEST['id']){
+    $user->getUser($_REQUEST['id']);
+}
+
+?>
+
+<form method="post" action="" style="margin: 55px" enctype="multipart/form-data">
+    <input type="hidden" name="type" value="user">
+    <input type="hidden" name="task" value="save">
+    <input type="hidden" name="user[id]" value="<?=$user->id?>">
+
+
+    <div class="option"><label for="">Логин</label><input type="text" name="user[login]" value="<?=$user->login?>"/></div>
+    <div class="option"><label for="">Пароль</label><input type="password" name="user[password]"/></div>
+    <div class="option"><label for="">ФІО(укр)</label><input type="text" name="user[name_ua]" value="<?=$user->name_ua?>"/></div>
+    <div class="option"><label for="">ФИО(русс)</label><input type="text" name="user[name_ru]" value="<?=$user->name_ru?>"/></div>
+    <div class="option"><label for="">FIO(en)</label><input type="text" name="user[name_en]" value="<?=$user->name_en?>"/></div>
+    <div class="option"><label for="">В офиссе</label><input type="checkbox" name="user[in_office]" value="1" <?=$user->in_office?"checked":""?>></div>
+    <?
+    if($user->photo){
+    ?>
+        <img src="/images/users/<?=$user->photo?>" alt=""/>
+    <?
+    }
+    ?>
+    <div class="option"><label for="">Фото</label><input type="file" name="user[photo]"></div>
+    <?
+    if($user->animatePhoto){
+    ?>
+        <img src="/images/users/<?=$user->animatePhoto?>" alt=""/>
+    <?
+    }
+    ?>
+    <div class="option"><label for="">Фото</label><input type="file" name="user[animatePhoto]"></div>
+    <input type="submit" value="Сохранить"/>
+    
+</form>
+
+<a href="/index2.php?type=user&task=list">Отмена</a>
+
+<style>
+    label{
+        width: 144px;
+        display: inline-block;
+        text-align: right;
+        padding-right: 20px;
+    }
+    .option{
+        margin: 10px 0;
+    }
+</style>

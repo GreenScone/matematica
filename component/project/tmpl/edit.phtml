@@ -1,0 +1,242 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: Bohdan
+ * Date: 02.05.14
+ * Time: 13:15
+ */
+$project = new Project();
+if($_REQUEST['id']){
+
+    $project->getProject($_REQUEST['id']);
+}
+$users = User::getUsersList("array");
+$tags = Tag::getTagList("array");
+
+?>
+<script src="/js/jquery-1.11.0.min.js"></script>
+
+<form method="post" action="" enctype="multipart/form-data">
+    <input type="hidden" name="type" value="project">
+    <input type="hidden" name="task" value="save">
+    <input type="hidden" name="project[id]" value="<?=$project->id?>">
+
+    <div class="option">
+        <label for="name_ua">Назва</label>
+        <input type="text" name="project[name_ua]" id="name_ua" value="<?=$project->name_ua?>"/>
+    </div>
+    <div class="option">
+        <label for="name_ru">Название</label>
+        <input type="text" name="project[name_ru]" id="name_ru" value="<?=$project->name_ru?>"/>
+    </div>
+    <div class="option">
+        <label for="name_en">Name</label>
+        <input type="text" name="project[name_en]" id="name_en" value="<?=$project->name_en?>"/>
+    </div>
+
+    <div class="option">
+        <label for="url">URL</label>
+        <input type="text" name="project[url]" id="url" value="<?=$project->url?>"/>
+    </div>
+
+    <div class="option desc_ua">
+        <label>Укр</label><br/>
+    <?
+    if(count($project->description_ua)==0):
+    ?>
+        <div class="option">
+            <label>Заголовок</label>
+            <input type="text" name="project[description_ua][0][title]"/><br/>
+            <label>Текст</label>
+            <textarea name="project[description_ua][0][text]"></textarea>
+        </div>
+    <?
+    else :
+        foreach($project->description_ua as $key_ua=>$desc):
+    ?>
+        <div class="option">
+            <label>Заголовок</label>
+            <input type="text" name="project[description_ua][<?=$key_ua?>][title]" value="<?=$desc->title?>"/><br/>
+            <label>Текст</label>
+            <textarea name="project[description_ua][<?=$key_ua?>][text]"><?=$desc->text?></textarea>
+        </div>
+    <?
+        endforeach;
+    endif;
+    ?>
+    </div>
+    <div class="option">
+        <a href="#" onclick="addDesc('ua')">Добавить поле</a>
+    </div>
+    <div class="option desc_ru">
+        <label>Русс</label><br/>
+        <?
+        if(count($project->description_ru)==0):
+            ?>
+            <div class="option">
+                <label>Заголовок</label>
+                <input type="text" name="project[description_ru][0][title]"/><br/>
+                <label>Текст</label>
+                <textarea name="project[description_ru][0][text]"></textarea>
+            </div>
+        <?
+        else :
+            foreach($project->description_ru as $key_ru=>$desc):
+                ?>
+                <div class="option">
+                    <label>Заголовок</label>
+                    <input type="text" name="project[description_ru][<?=$key_ru?>][title]" value="<?=$desc->title?>"/><br/>
+                    <label>Текст</label>
+                    <textarea name="project[description_ru][<?=$key_ru?>][text]"><?=$desc->text?></textarea>
+                </div>
+            <?
+            endforeach;
+        endif;
+        ?>
+    </div>
+    <div class="option">
+        <a href="#" onclick="addDesc('ru')">Добавить поле</a>
+    </div>
+    <div class="option desc_en">
+        <label for="description_en">EN</label><br/>
+        <?
+        if(count($project->description_en)==0):
+            ?>
+            <div class="option">
+                <label>Заголовок</label>
+                <input type="text" name="project[description_en][0][title]"/><br/>
+                <label>Текст</label>
+                <textarea name="project[description_en][0][text]"></textarea>
+            </div>
+        <?
+        else :
+            foreach($project->description_en as $key_en=>$desc):
+                ?>
+                <div class="option">
+                    <label>Заголовок</label>
+                    <input type="text" name="project[description_en][<?=$key_en?>][title]" value="<?=$desc->title?>"/><br/>
+                    <label>Текст</label>
+                    <textarea name="project[description_en][<?=$key_en?>][text]"><?=$desc->text?></textarea>
+                </div>
+            <?
+            endforeach;
+        endif;
+        ?>
+    </div>
+    <div class="option">
+        <a href="#" onclick="addDesc('en')">Добавить поле</a>
+    </div>
+
+    <div class="option">
+        <label for="prev_image">Миниатюра</label>
+        <input name="project[prev_image]" type="file" id="prev_image"/>
+        <?
+        if($project->prev_image){
+        ?>
+            <br><img src="/images/projects/<?=$project->id.DIRECTORY_SEPARATOR.$project->prev_image?>">
+        <?
+        }
+        ?>
+    </div>
+
+    <div class="option">
+        <label style="float: left;">Над проектом работали</label>
+
+        <div class="option" style="margin-left: 170px">
+        <?
+        foreach($users as $k=>$name){
+        ?>
+            <input value="<?=$k?>" id="usr_<?=$k?>" <?=(in_array($k,$project->users)?"checked":"")?> type="checkbox" name="team[]"/><label for="usr_<?=$k?>"><?=$name?></label><br>
+
+        <?
+        }
+        ?>
+        </div>
+    </div>
+
+    <div class="option">
+        <label style="float: left;">Теги</label>
+        <div class="option" style="margin-left: 170px">
+        <?
+        foreach($tags as $k=>$name){
+        ?>
+            <input value="<?=$k?>" <?=(in_array($k,$project->tags)?"checked":"")?> id="tag_<?=$k?>" type="checkbox" name="tags[]"/><label for="tag_<?=$k?>"><?=$name?></label><br>
+        <?
+        }
+        ?>
+        </div>
+    </div>
+
+    <label for="view_type">Тип контента</label>
+    <select name="project[view_type]" id="view_type">
+        <option value="" style="display: none">Выбрать</option>
+        <option value="1" <?/*=($project->view_type==1)?"selected":""*/?>>Одна картинка</option>
+        <option value="2" <?/*=($project->view_type==2)?"selected":""*/?>>Листалка(слайдер)</option>
+        <option value="4" <?/*=($project->view_type==4)?"selected":""*/?>>Картинки в столбец</option>
+        <option value="3" <?/*=($project->view_type==3)?"selected":""*/?>>HTML блок</option>
+    </select>
+
+    <div class="tab-1">
+        <input type="file" name="object_one_image">
+    </div>
+    <div class="tab-2">
+        <input type="file" name="object_gallery[]" multiple>
+    </div>
+    <div class="tab-3">
+        <textarea name="object_html"></textarea>
+    </div>
+    <div class="tab-4">
+        <input type="file" name="object_gallery_v[]" multiple>
+    </div>
+
+
+
+    <div style="clear: both"></div>
+    <input type="submit" value="Сохранить"/>
+
+
+</form>
+
+<a href="/index2.php?type=project&task=list">Отмена</a>
+
+
+<script>
+    var desc = {"ua":<?=(count($project->description_ua)?count($project->description_ua):0)?>,
+                "ru":<?=(count($project->description_ru)?count($project->description_ru):0)?>,
+                "en":<?=(count($project->description_en)?count($project->description_en):0)?>
+                }
+
+    function addDesc(lang){
+        desc[lang]++;
+        var html = '<div class="option">' +
+                        '<label>Заголовок</label>' +
+                        '<input type="text" name="project[description_'+lang+']['+desc[lang]+'][title]"/><br/>' +
+                        '<label>Текст</label>' +
+                        '<textarea name="project[description_'+lang+']['+desc[lang]+'][text]"></textarea>' +
+                    '</div>';
+        $('.desc_'+lang).append(html);
+
+    }
+    $(document).ready(function(){
+        $('#view_type').change(function(){
+            $('.tab-1,.tab-2,.tab-3,.tab-4').hide();
+            $('.tab-'+this.value).show();
+        })
+    });
+
+</script>
+<style>
+    label{
+        width: 144px;
+        display: inline-block;
+        text-align: right;
+        padding-right: 20px;
+        vertical-align: top;
+    }
+    .option{
+        margin: 10px 0;
+    }
+    .tab-1,.tab-2,.tab-3,.tab-4{
+        display: none;
+    }
+</style>

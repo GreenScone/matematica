@@ -1,0 +1,50 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+#RewriteCond %{REQUEST_FILENAME} !-d
+#RewriteCond %{REQUEST_FILENAME} !-f
+#RewriteRule ^license.php.* - [L]
+#RewriteCond %{REQUEST_FILENAME} !-d
+#RewriteCond %{REQUEST_FILENAME} !-f
+#RewriteCond %{REQUEST_URI} \.(css|jpg|jpeg|gif|png|js)$
+#Rewriterule (.*) license.php?id=$1 [L]
+#RewriteCond %{REQUEST_FILENAME} !-d
+#RewriteCond %{REQUEST_FILENAME} !-f
+#RewriteCond %{REQUEST_URI} ^\/rezyume\/.* [OR]
+#RewriteCond %{REQUEST_URI} ^\/rabota\/.* [OR]
+#RewriteCond %{REQUEST_URI} ^\/vakansii\/.* [OR]
+#RewriteCond %{REQUEST_URI} ^\/stati\/.* [OR]
+#RewriteCond %{REQUEST_URI} ^\/novosti\/.*
+#Rewriterule (.*) license.php?id=$1&%{QUERY_STRING} [L]
+#RewriteRule ^(.*) license.php?id=$1&%{QUERY_STRING}
+    RewriteBase /
+
+    AddDefaultCharset utf-8
+    AddCharset utf-8 *
+    # 1 YEAR
+<FilesMatch "\.(ico|pdf|flv)$">
+Header set Cache-Control "max-age=29030400, public"
+</FilesMatch>
+# 1 WEEK
+<FilesMatch "\.(jpg|jpeg|png|gif|swf)$">
+Header set Cache-Control "max-age=604800, public"
+</FilesMatch>
+# 2 DAYS
+<FilesMatch "\.(xml|txt|css|js)$">
+Header set Cache-Control "max-age=172800, proxy-revalidate"
+</FilesMatch>
+# 1 MIN
+<FilesMatch "\.(html|htm|php)$">
+Header set Cache-Control "max-age=0, private, proxy-revalidate"
+</FilesMatch>
+
+
+
+
+
+    #Checks to see if the user is attempting to access a valid file,
+    #such as an image or css document, if this isn't true it sends the
+    #request to index.php
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ index.php [L]
+</IfModule>

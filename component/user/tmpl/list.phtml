@@ -1,0 +1,20 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: Bohdan
+ * Date: 02.05.14
+ * Time: 15:06
+ */
+
+$users = User::getUsersList("array");
+
+foreach($users as $id=>$user){
+    ?>
+    <a href="/index2.php?type=user&task=edit&id=<?=$id?>"><?=$user?></a><br>
+    <?
+}
+?>
+<br>
+<br>
+<br>
+<a href="/index2.php?type=user&task=new">Создать нового</a>
